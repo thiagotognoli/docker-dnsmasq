@@ -1,0 +1,40 @@
+version: '3.5'
+
+services:
+  dnsmask:
+#    image: jpillora/dnsmasq
+    build: .
+    restart: always
+    container_name: dnsmask
+    ports:
+      - 5380:8080
+      - 53:53/udp
+      - 53:53/tcp
+#    cap_add:
+#      - NET_ADMIN
+    volumes:
+      - ./dnsmasq.conf:/etc/dnsmasq.conf
+      - ./hosts:/etc/hosts
+      - ./program.toml:/webproc/program.toml
+    networks:
+#      dnsmask:
+#        ipv4_address: 172.53.53.10
+#        #                ipv6_address: "2001:3984:3989::10"
+      - external_dnsmask
+
+networks:
+#  dnsmask:
+#    driver: bridge
+##    driver_opts:
+##      com.docker.network.enable_ipv6: "true"
+#    internal: true
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: "172.53.53.0/24"
+##          gateway: "172.0.0.1"
+##        - subnet: "2001:3953:3989::/64"
+##          gateway: "2001:3984:3989::1"
+  external_dnsmask:
+    name: external_dnsmask
+    driver: bridge
